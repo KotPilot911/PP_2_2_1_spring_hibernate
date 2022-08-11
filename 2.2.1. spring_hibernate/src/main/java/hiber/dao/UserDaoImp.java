@@ -1,7 +1,11 @@
 package hiber.dao;
 
+import hiber.model.Car;
 import hiber.model.User;
+import org.hibernate.Criteria;
+import org.hibernate.Session;
 import org.hibernate.SessionFactory;
+import org.hibernate.criterion.Restrictions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
@@ -26,4 +30,13 @@ public class UserDaoImp implements UserDao {
       return query.getResultList();
    }
 
+   @Override
+   public User getUser(String model, int series) {
+      Session session = sessionFactory.getCurrentSession();
+      Criteria criteria = session.createCriteria(Car.class);
+      criteria.add(Restrictions.eq("model", model));
+      criteria.add(Restrictions.eq("series", series));
+      Car car = (Car) criteria.uniqueResult();
+      return car.getUser();
+   }
 }
